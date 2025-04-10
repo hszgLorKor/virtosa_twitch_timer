@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Timer</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 48px;
+        }
+        #timer {
+            font-size: 72px;
+        }
+    </style>
+</head>
+<body>
+<div id="timer">00:00</div>
+<script>
+    let totalTime = 0; // in seconds
+    const addTimeOnSubscription = 30; // e.g., 30 seconds for each subscription
+
+    function updateTimer() {
+        const minutes = Math.floor(totalTime / 60);
+        const seconds = totalTime % 60;
+        document.getElementById('timer').innerText =
+            (minutes < 10 ? '0' : '') + minutes + ':' +
+            (seconds < 10 ? '0' : '') + seconds;
+        totalTime++; // Increase total time every second
+    }
+
+    function addTime() {
+        totalTime += addTimeOnSubscription; // Add time for a subscription
+    }
+
+    // Set interval to update the timer every second
+    setInterval(updateTimer, 1000);
+
+    // This function should be called upon a subscription event
+    // For testing, you can call addTime manually
+    // addTime(); // Uncomment for manual testing
+</script>
+</body>
+</html>
