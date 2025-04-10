@@ -1,8 +1,14 @@
 const express = require('express');
 const tmi = require('tmi.js');
+const http = require('http');
+const WebSocket = require('ws');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Create an HTTP server
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 app.use(express.json());
 app.use(express.static('public')); // Directory for serving your HTML
@@ -21,13 +27,16 @@ client.connect();
 
 // Listen for subscription events
 client.on('subscription', (channel, username, methods, message, userstate) => {
-    // Here you would send a message to the frontend to tell it to add time
-    // This could be done through WebSockets, or you can use polling from the client
     console.log(`${username} has subscribed!`);
-    // You need to implement a way to notify your client's timer script to call addTime function
+    // Notify all connected clients to add time
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ action: 'addTime' }));
+        }
+    });
 });
 
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
