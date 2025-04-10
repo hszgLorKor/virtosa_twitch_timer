@@ -16,10 +16,10 @@ app.use(express.static('public')); // Directory for serving your HTML
 // Configure TMI.js
 const client = new tmi.Client({
     identity: {
-        username: 'your_twitch_username',
-        password: 'oauth:your_oauth_token'
+        username: 'Virtosa_',
+        password: 'oauth_token'
     },
-    channels: ['your_channel_name']
+    channels: ['Virtosa_']
 });
 
 // Connect to Twitch
@@ -35,6 +35,14 @@ client.on('subscription', (channel, username, methods, message, userstate) => {
         }
     });
 });
+
+client.on('message', (message) => {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ action: 'addTime' }));
+        }
+    })
+})
 
 // Start the server
 server.listen(port, () => {
